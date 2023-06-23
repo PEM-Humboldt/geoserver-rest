@@ -460,7 +460,7 @@ class Geoserver:
                     continue
 
                 if mode == "A":
-                    if prevRole != role:
+                    if role not in prevRole:
                         newRole = ",".join([prevRole, role])
                     else:
                         failures += 1
