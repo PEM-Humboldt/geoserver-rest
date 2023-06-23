@@ -476,6 +476,8 @@ class Geoserver:
                         newRole = prevRole.replace("," + role, "")
                     else:
                         continue
+                elif mode == "R":
+                    newRole = role
 
                 if status_code == 409:
                     try:
