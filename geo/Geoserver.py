@@ -433,6 +433,7 @@ class Geoserver:
         created = 0
         updated = 0
         deleted = 0
+        failures = 0
 
         rulesList = self.get_layer_rules()
 
@@ -455,11 +456,15 @@ class Geoserver:
                 newRole = role
 
                 if prevRole is None:
+                    failures += 1
                     continue
 
                 if mode == "A":
                     if prevRole != role:
                         newRole = ",".join([prevRole, role])
+                    else:
+                        failures += 1
+                        continue
                 elif mode == "D":
                     if role == prevRole:
                         self.delete_layer_rule(rule)
@@ -478,9 +483,10 @@ class Geoserver:
                             workspace['name'], '*', permission, newRole)
                         updated += 1
                     except Exception as update_exception:
+                        failures += 1
                         print(
                             f"Failed to update rule for Workspace: {workspace['name']} | Error: {str(update_exception)}")
-        return "Rules created: {} | Rules updated: {} | Rules deleted: {}".format(created, updated, deleted)
+        return "Rules created: {} | Rules updated: {} | Rules deleted: {} | Failures: {}".format(created, updated, deleted, failures)
 
     def create_layer_rule(self, workspace: str, layer: str, permission: str, role: str):
         """
